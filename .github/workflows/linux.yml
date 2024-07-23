@@ -45,12 +45,6 @@ jobs:
     name: Rocky Linux 8
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        defines:
-          - ""
-          - "DESKTOP_APP_DISABLE_X11_INTEGRATION"
-
     env:
       UPLOAD_ARTIFACT: "true"
 
