@@ -77,7 +77,7 @@ jobs:
           cd ${{ env.REPO_NAME }}/Telegram/build/docker/centos_env
           rm poetry.lock
           poetry install
-          DEBUG= LTO= poetry run gen_dockerfile | DOCKER_BUILDKIT=1 docker build -t $IMAGE_TAG -
+          DEBUG= LTO= poetry run gen_dockerfile | DOCKER_BUILDKIT=1 docker build -t tdesktop:centos_env -
 
     
       - name: Telegram Desktop build.
