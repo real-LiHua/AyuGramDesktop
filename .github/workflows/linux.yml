@@ -66,9 +66,9 @@ jobs:
 
       - name: First set up.
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          rm AyuGramDesktop/Telegram/build/docker/centos_env/poetry.lock
-          ./AyuGramDesktop/Telegram/build/prepare/linux.sh
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+          docker pull ghcr.io/$GITHUB_REPOSITORY/centos_env
+          docker tag ghcr.io/$GITHUB_REPOSITORY/centos_env tdesktop:centos_env
       - name: Telegram Desktop build.
         run: |
           cd $REPO_NAME
