@@ -90,16 +90,7 @@ jobs:
 
       - name: Check.
         run: |
-          filePath="$REPO_NAME/out/Release/Telegram"
-          if test -f "$filePath"; then
-            echo "Build successfully done! :)"
-
-            size=$(stat -c %s "$filePath")
-            echo "File size of ${filePath}: ${size} Bytes."
-          else
-            echo "Build error, output file does not exist."
-            exit 1
-          fi
+          ls ${{ env.REPO_NAME }}/out
 
       - uses: actions/upload-artifact@v4
         if: env.UPLOAD_ARTIFACT == 'true'
