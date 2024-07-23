@@ -66,9 +66,19 @@ jobs:
 
       - name: First set up.
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-          docker pull ghcr.io/telegramdesktop/tdesktop/centos_env
-          docker tag ghcr.io/telegramdesktop/tdesktop/centos_env tdesktop:centos_env
+          sudo apt update
+          curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Free up some disk space.
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+
+      - name: Docker image build.
+        run: |
+          cd ${{ env.REPO_NAME }}/Telegram/build/docker/centos_env
+          rm poetry.lock
+          poetry install
+          DEBUG= LTO= poetry run gen_dockerfile | DOCKER_BUILDKIT=1 docker build -t $I
+    
       - name: Telegram Desktop build.
         run: |
           cd $REPO_NAME
@@ -81,25 +91,18 @@ jobs:
           else
             echo "ARTIFACT_NAME=Telegram" >> $GITHUB_ENV
           fi
+          
 
-          docker run --rm \
-          -v $PWD:/usr/src/tdesktop \
-          -e CONFIG=Debug \
+          docker run --rm -it \
+          -v "$PWD:/usr/src/tdesktop" \
           tdesktop:centos_env \
           /usr/src/tdesktop/Telegram/build/docker/centos_env/build.sh \
-          -D CMAKE_C_FLAGS_DEBUG="" \
-          -D CMAKE_CXX_FLAGS_DEBUG="" \
-          -D CMAKE_C_FLAGS="-Werror" \
-          -D CMAKE_CXX_FLAGS="-Werror" \
-          -D CMAKE_EXE_LINKER_FLAGS="-s" \
-          -D TDESKTOP_API_TEST=ON \
-          -D DESKTOP_APP_DISABLE_AUTOUPDATE=OFF \
-          -D DESKTOP_APP_DISABLE_CRASH_REPORTS=OFF \
-          $DEFINE
+          -D TDESKTOP_API_ID=2040 \
+          -D TDESKTOP_API_HASH=b18441a1ff607e10a989891a5462e627
 
       - name: Check.
         run: |
-          filePath="$REPO_NAME/out/Debug/Telegram"
+          filePath="$REPO_NAME/out/Release/Telegram"
           if test -f "$filePath"; then
             echo "Build successfully done! :)"
 
@@ -113,7 +116,7 @@ jobs:
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
-          cd $REPO_NAME/out/Debug
+          cd $REPO_NAME/out/Release
           sudo mkdir artifact
           sudo mv {Telegram,Updater} artifact/
       - uses: actions/upload-artifact@v4
@@ -121,4 +124,4 @@ jobs:
         name: Upload artifact.
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.REPO_NAME }}/out/Debug/artifact/
+          path: ${{ env.REPO_NAME }}/out/Release/artifact/
