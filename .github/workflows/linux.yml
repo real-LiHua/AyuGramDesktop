@@ -66,7 +66,7 @@ jobs:
 
       - name: First set up.
         run: |
-          apt install -y poetry
+          sudo apt install -y poetry
           rm AyuGramDesktop/Telegram/build/docker/centos_env/poetry.lock
           ./AyuGramDesktop/Telegram/build/prepare/linux.sh
       - name: Telegram Desktop build.
