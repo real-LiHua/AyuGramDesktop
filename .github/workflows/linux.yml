@@ -66,19 +66,9 @@ jobs:
 
       - name: First set up.
         run: |
-          sudo apt update
-          curl -sSL https://install.python-poetry.org | python3 -
-
-      - name: Free up some disk space.
-        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
-
-      - name: Docker image build.
-        run: |
-          cd ${{ env.REPO_NAME }}/Telegram/build/docker/centos_env
-          rm poetry.lock
-          poetry install
-          DEBUG= LTO= poetry run gen_dockerfile | DOCKER_BUILDKIT=1 docker build -t tdesktop:centos_env -
-
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+          docker pull ghcr.io/real-lihua/ayugramtdesktop/centos_env
+          docker tag ghcr.io/real-lihua/ayugramtdesktop/centos_env tdesktop:centos_env
     
       - name: Telegram Desktop build.
         run: |
