@@ -90,6 +90,7 @@ jobs:
 
       - name: Check.
         run: |
+          rm -rvf ${{ env.REPO_NAME }}/out/CMakeFiles
           ls ${{ env.REPO_NAME }}/out/*/
 
       #- uses: actions/upload-artifact@v4
