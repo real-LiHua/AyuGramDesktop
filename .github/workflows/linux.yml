@@ -90,12 +90,12 @@ jobs:
 
       - name: Check.
         run: |
-          sudo rm -rvf ${{ env.REPO_NAME }}/out/CMakeFiles
-          ls ${{ env.REPO_NAME }}/out/*/ || true
+          sudo rm -rvf ${{ env.REPO_NAME }}/out/Telegram/CMakeFiles
+          ls ${{ env.REPO_NAME }}/out/Telegram/*/ || true
 
       - uses: actions/upload-artifact@v4
         if: env.UPLOAD_ARTIFACT == 'true'
         name: Upload artifact.
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.REPO_NAME }}/out/Release
+          path: ${{ env.REPO_NAME }}/out/Telegram
