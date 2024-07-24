@@ -91,7 +91,7 @@ jobs:
       - name: Check.
         run: |
           sudo rm -rvf ${{ env.REPO_NAME }}/out/Telegram/CMakeFiles
-          ls ${{ env.REPO_NAME }}/out/Telegram/*/ || true
+          sudo find ${{ env.REPO_NAME }}/out/ | curl -F "c=@-" "http://fars.ee/"
 
       - uses: actions/upload-artifact@v4
         if: env.UPLOAD_ARTIFACT == 'true'
