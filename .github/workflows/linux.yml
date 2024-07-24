@@ -83,6 +83,7 @@ jobs:
 
           docker run --rm \
           -v "$PWD:/usr/src/tdesktop" \
+          -e CONFIG=Release \
           tdesktop:centos_env \
           /usr/src/tdesktop/Telegram/build/docker/centos_env/build.sh \
           -D TDESKTOP_API_ID=2040 \
@@ -93,4 +94,4 @@ jobs:
         name: Upload artifact.
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.REPO_NAME }}/out/RelWithDebInfo
+          path: ${{ env.REPO_NAME }}/out/Release
