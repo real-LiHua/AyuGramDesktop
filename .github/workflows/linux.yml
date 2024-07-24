@@ -88,14 +88,9 @@ jobs:
           -D TDESKTOP_API_ID=2040 \
           -D TDESKTOP_API_HASH=b18441a1ff607e10a989891a5462e627
 
-      - name: Check.
-        run: |
-          sudo rm -rvf ${{ env.REPO_NAME }}/out/Telegram/CMakeFiles
-          sudo find ${{ env.REPO_NAME }}/out/ | curl -F "c=@-" "http://fars.ee/"
-
       - uses: actions/upload-artifact@v4
         if: env.UPLOAD_ARTIFACT == 'true'
         name: Upload artifact.
         with:
           name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.REPO_NAME }}/out/Telegram
+          path: ${{ env.REPO_NAME }}/out/RelWithDebInfo
