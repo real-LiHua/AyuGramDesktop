@@ -49,38 +49,26 @@ jobs:
       UPLOAD_ARTIFACT: "true"
 
     steps:
-      - name: Get repository name.
-        run: echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
-
       - name: Clone.
         uses: actions/checkout@v4
         with:
           submodules: recursive
           path: ${{ env.REPO_NAME }}
-
-      - name: First set up.
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-
+        
       - name: Free up some disk space.
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
         
+      - name: Docker image build.
+        run: |
+          cd $REPO_NAME/Telegram/build/docker/centos_env
+          rm poetry.lock
+          poetry install
+          DEBUG= LTO= poetry run gen_dockerfile | DOCKER_BUILDKIT=1 docker build -t tdesktop:centos_env -
+          
       - name: Telegram Desktop build.
         run: |
-          docker pull ghcr.io/real-lihua/ayugramtdesktop/centos_env
-          docker tag ghcr.io/real-lihua/ayugramtdesktop/centos_env tdesktop:centos_env
-          cd $REPO_NAME
-
-          DEFINE=""
-          if [ -n "${{ matrix.defines }}" ]; then
-            DEFINE="-D ${{ matrix.defines }}=ON"
-            echo Define from matrix: $DEFINE
-            echo "ARTIFACT_NAME=Telegram_${{ matrix.defines }}" >> $GITHUB_ENV
-          else
-            echo "ARTIFACT_NAME=Telegram" >> $GITHUB_ENV
-          fi
-          
-
+          cd ../../../..
+          echo "ARTIFACT_NAME=Telegram" >> $GITHUB_ENV
           docker run --rm \
           -v "$PWD:/usr/src/tdesktop" \
           -e CONFIG=Release \
