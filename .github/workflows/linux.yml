@@ -53,14 +53,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          path: ${{ env.REPO_NAME }}
         
       - name: Free up some disk space.
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
         
       - name: Docker image build.
         run: |
-          cd $REPO_NAME/Telegram/build/docker/centos_env
+          cd Telegram/build/docker/centos_env
           rm poetry.lock
           poetry install
           DEBUG= LTO= poetry run gen_dockerfile | DOCKER_BUILDKIT=1 docker build -t tdesktop:centos_env -
